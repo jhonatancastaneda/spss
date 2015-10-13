@@ -1,0 +1,163 @@
+---
+title: "Informe_1"
+author: "Jhonatan"
+date: "7 de octubre de 2015"
+output: html_document
+---
+
+
+
+### Introducción
+
+El presente documento tiene como objetivo presentar un __reporte__ automático utilizando:
+
+* R
+* Markdown
+    + __Rmarkdown__
+    
+    
+    
+    
+
+### Descripción e información 
+
+Iniciamos cargando el archivo que contiene las varibles a utilizar, el paquete _readxl_ permite leer archivos desde excel, que es donde suelen estar los archivos, sin la necesidad de instalar complementos, pero en este caso usaremos el paquete _haven_ pues la data esta en formato spss.
+
+```{r,echo=TRUE,eval=TRUE}
+options(warn=-1)
+library(haven)
+library(dplyr)
+
+data <- read_sav("SPSS_Esmeraldas_Poblacion.sav")
+
+  glimpse(data)
+```
+Analizando la información disponemos de `r nrow(data)` observaciones de `r ncol(data)` variables.
+Se requiere explicar la mayor cantidad de varibles.
+
+###Iniciaremos por ver las varables:
+Empleamos el paquete `sqldf()`para poder usar lo siguiente:
+
+`r names(data)[1]` :
+```{r,echo=TRUE,eval=TRUE}
+library(sqldf)
+sqldf("SELECT count(I01)
+      FROM data
+      Group By I01")
+```
+`r names(data)[2]` :
+```{r,echo=TRUE,eval=TRUE}
+library(sqldf)
+sqldf("SELECT count(I02)
+      FROM data
+      Group By I02")
+```
+`r names(data)[3]` :
+```{r,echo=TRUE,eval=TRUE}
+library(sqldf)
+sqldf("SELECT count(I03)
+      FROM data
+      Group By I03")
+```
+`r names(data)[4]` :
+```{r,echo=TRUE,eval=TRUE}
+library(sqldf)
+sqldf("SELECT count(I04)
+      FROM data
+      Group By I04")
+```
+`r names(data)[5]` :
+```{r,echo=TRUE,eval=TRUE}
+library(sqldf)
+sqldf("SELECT count(I05)
+      FROM data
+      Group By I05")
+```
+`r names(data)[11]` :
+```{r,echo=TRUE,eval=TRUE}
+library(sqldf)
+sqldf("SELECT count(P01)
+      FROM data
+      Group By P01")
+```
+`r names(data)[13]` :
+```{r,echo=TRUE,eval=TRUE}
+library(sqldf)
+sqldf("SELECT count(P03)
+      FROM data
+      Group By P03")
+```
+
+
+###Ahora veremos el comportamiento de una variable en función de otra:
+
+
+`r names(data)[2]` en función de la variable `r names(data)[3]`. 
+```{r,echo=TRUE,eval=TRUE}
+library(sqldf)
+sqldf("SELECT I02, count(I03)
+      FROM data
+      Group By I02")
+```
+
+`r names(data)[3]` en función de la variable `r names(data)[4]`. 
+```{r,echo=TRUE,eval=TRUE}
+library(sqldf)
+sqldf("SELECT I03, count(I04)
+      FROM data
+      Group By I03")
+```
+
+`r names(data)[4]` en función de la variable `r names(data)[5]`. 
+```{r,echo=TRUE,eval=TRUE}
+library(sqldf)
+sqldf("SELECT I04, count(I05)
+      FROM data
+      Group By I04")
+```
+`r names(data)[2]` en función de la variable `r names(data)[11]`. 
+Población en cada `r names(data)[2]`
+```{r,echo=TRUE,eval=TRUE}
+library(sqldf)
+sqldf("SELECT I02, count(P01)
+      FROM data
+      Group By I02")
+```
+`r names(data)[3]` en función de la variable `r names(data)[11]`. 
+Población en cada `r names(data)[3]`
+```{r,echo=TRUE,eval=TRUE}
+library(sqldf)
+sqldf("SELECT I03, count(P01)
+      FROM data
+      Group By I03")
+```
+`r names(data)[4]` en función de la variable `r names(data)[11]`. 
+Población en cada `r names(data)[4]`
+```{r,echo=TRUE,eval=TRUE}
+library(sqldf)
+sqldf("SELECT I04, count(P01)
+      FROM data
+      Group By I04")
+```
+`r names(data)[5]` en función de la variable `r names(data)[11]`. 
+Población en cada `r names(data)[5]`
+```{r,echo=TRUE,eval=TRUE}
+library(sqldf)
+sqldf("SELECT I05, count(P01)
+      FROM data
+      Group By I05")
+```
+
+
+###Graficos:
+```{r, fig.align="center",fig.width=5,fig.height=4}
+hist(data[[11]],15)
+hist(data[[13]],15)
+plot(data[[13]],data[[2]])
+plot(data[[13]],data[[3]])
+plot(data[[13]],data[[4]])
+plot(data[[13]],data[[5]])
+plot(data[[13]],data[[11]])
+```
+
+
