@@ -28,6 +28,8 @@ library(DT)
 
 data <- read_sav("SPSS_Esmeraldas_Poblacion.sav")
 
+data$I02 <- as.numeric(data$I02)
+data$P01 <- as.numeric(data$P01)
 cod <- names(data)[1:13]
 variables_ <- c("PROVINCIA","CANTON","PARROQUIA","ZONA","SECOR","VIVIENDA","HOGAR","URB_RUR","ORDEN EN EL HOGAR","C Y D EN ESE HOGAR","SEXO","PARENTESCO CON JEFE DE HOGAR","EDAD")
 TABLA_ <- data.frame(cod,variables_)
