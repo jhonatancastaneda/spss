@@ -7,7 +7,7 @@ output: html_document
 
 
 
-### Introducción
+# Introducción
 
 El presente documento tiene como objetivo presentar un __reporte__ automático utilizando:
 
@@ -15,149 +15,105 @@ El presente documento tiene como objetivo presentar un __reporte__ automático u
 * Markdown
     + __Rmarkdown__
     
-    
-    
-    
 
-### Descripción e información 
+# Descripción e información 
 
-Iniciamos cargando el archivo que contiene las varibles a utilizar, el paquete _readxl_ permite leer archivos desde excel, que es donde suelen estar los archivos, sin la necesidad de instalar complementos, pero en este caso usaremos el paquete _haven_ pues la data esta en formato spss.
+Iniciamos cargando el archivo que contiene las varibles a utilizar, el paquete _readxl_ permite leer archivos desde excel, que es donde suelen estar los archivos, sin la necesidad de instalar complementos, pero en este caso usaremos el paquete _haven_ pues la data está en formato spss.
 
 ```{r,echo=TRUE,eval=TRUE}
 options(warn=-1)
 library(haven)
 library(dplyr)
+library(DT)
 
 data <- read_sav("SPSS_Esmeraldas_Poblacion.sav")
 
-  glimpse(data)
+cod <- names(data)[1:13]
+variables_ <- c("PROVINCIA","CANTON","PARROQUIA","ZONA","SECOR","VIVIENDA","HOGAR","URB_RUR","ORDEN EN EL HOGAR","C Y D EN ESE HOGAR","SEXO","PARENTESCO CON JEFE DE HOGAR","EDAD")
+TABLA_ <- data.frame(cod,variables_)
+datatable(TABLA_)
+glimpse(data)
 ```
 Analizando la información disponemos de `r nrow(data)` observaciones de `r ncol(data)` variables.
-Se requiere explicar la mayor cantidad de varibles.
+Se requiere explicar la mayor cantidad de varibles, en este caso se analizaran las primeras 13 variables por lo que en la tabla se muestran solo estas, ya que son las que mayor informacion nos dan sobre los datos.
 
-###Iniciaremos por ver las varables:
-Empleamos el paquete `sqldf()`para poder usar lo siguiente:
+##Iniciaremos por ver las variables:
 
-`r names(data)[1]` :
+###Empleamos el paquete `sqldf()`para poder usar lo siguiente:
+
+
+En lo siguiete veremos los diferentes valores que toma cada variable, la cantidad de veces que aparece en los datos cada uno de estos valores, es decir la cantidad de personas que se tienen registradas en cada uno de los valores de las variables, la edad maxima y minima.
+
+###Cantidad de personas registradas en cada `r variables_[2]`: 
 ```{r,echo=TRUE,eval=TRUE}
 library(sqldf)
-sqldf("SELECT count(I01)
-      FROM data
-      Group By I01")
-```
-`r names(data)[2]` :
-```{r,echo=TRUE,eval=TRUE}
-library(sqldf)
-sqldf("SELECT count(I02)
+sqldf("SELECT I02, count(I03) AS POBL,max(P03) AS EDAD_MAX,min(P03) AS EDAD_MIN
       FROM data
       Group By I02")
 ```
-`r names(data)[3]` :
+
+###Cantidad de personas registradas en cada `r variables_[3]`: 
 ```{r,echo=TRUE,eval=TRUE}
 library(sqldf)
-sqldf("SELECT count(I03)
+sqldf("SELECT I03, count(I04) AS POBL,max(P03) AS EDAD_MAX,min(P03) AS EDAD_MIN
       FROM data
       Group By I03")
 ```
-`r names(data)[4]` :
+
+###Cantidad de personas registradas en cada `r variables_[4]`: 
 ```{r,echo=TRUE,eval=TRUE}
 library(sqldf)
-sqldf("SELECT count(I04)
+sqldf("SELECT I04, count(I05) AS POBL,max(P03) AS EDAD_MAX,min(P03) AS EDAD_MIN
       FROM data
       Group By I04")
 ```
-`r names(data)[5]` :
+###Cantidad de personas registradas en cada `r variables_[5]`: 
 ```{r,echo=TRUE,eval=TRUE}
 library(sqldf)
-sqldf("SELECT count(I05)
+sqldf("SELECT I05, count(I04) AS POBL,max(P03) AS EDAD_MAX,min(P03) AS EDAD_MIN
       FROM data
-      Group By I05")
+      Group By I04")
 ```
-`r names(data)[11]` :
+###Cantidad de personas registradas en cada `r variables_[13]`: 
 ```{r,echo=TRUE,eval=TRUE}
 library(sqldf)
-sqldf("SELECT count(P01)
-      FROM data
-      Group By P01")
-```
-`r names(data)[13]` :
-```{r,echo=TRUE,eval=TRUE}
-library(sqldf)
-sqldf("SELECT count(P03)
+sqldf("SELECT P03, count(I05) AS POBL
       FROM data
       Group By P03")
 ```
 
 
-###Ahora veremos el comportamiento de una variable en función de otra:
+#Gráficos:
 
-
-`r names(data)[2]` en función de la variable `r names(data)[3]`. 
-```{r,echo=TRUE,eval=TRUE}
-library(sqldf)
-sqldf("SELECT I02, count(I03)
-      FROM data
-      Group By I02")
-```
-
-`r names(data)[3]` en función de la variable `r names(data)[4]`. 
-```{r,echo=TRUE,eval=TRUE}
-library(sqldf)
-sqldf("SELECT I03, count(I04)
-      FROM data
-      Group By I03")
-```
-
-`r names(data)[4]` en función de la variable `r names(data)[5]`. 
-```{r,echo=TRUE,eval=TRUE}
-library(sqldf)
-sqldf("SELECT I04, count(I05)
-      FROM data
-      Group By I04")
-```
-`r names(data)[2]` en función de la variable `r names(data)[11]`. 
-Población en cada `r names(data)[2]`
-```{r,echo=TRUE,eval=TRUE}
-library(sqldf)
-sqldf("SELECT I02, count(P01)
-      FROM data
-      Group By I02")
-```
-`r names(data)[3]` en función de la variable `r names(data)[11]`. 
-Población en cada `r names(data)[3]`
-```{r,echo=TRUE,eval=TRUE}
-library(sqldf)
-sqldf("SELECT I03, count(P01)
-      FROM data
-      Group By I03")
-```
-`r names(data)[4]` en función de la variable `r names(data)[11]`. 
-Población en cada `r names(data)[4]`
-```{r,echo=TRUE,eval=TRUE}
-library(sqldf)
-sqldf("SELECT I04, count(P01)
-      FROM data
-      Group By I04")
-```
-`r names(data)[5]` en función de la variable `r names(data)[11]`. 
-Población en cada `r names(data)[5]`
-```{r,echo=TRUE,eval=TRUE}
-library(sqldf)
-sqldf("SELECT I05, count(P01)
-      FROM data
-      Group By I05")
-```
-
-
-###Graficos:
+ Para la variable `r variables_[11]` el Histograma que nos da información de la cantidad de datos receptados sobre cada uno de los valores que toma la variable es:
 ```{r, fig.align="center",fig.width=5,fig.height=4}
 hist(data[[11]],15)
+```
+ Para la variable `r variables_[13]` el Histograma que nos da información de la cantidad de datos receptados sobre cada uno de los valores que toma la variable es:
+```{r, fig.align="center",fig.width=5,fig.height=4}
 hist(data[[13]],15)
+```
+ El siguiente grafico muestra a `r variables_[13]` vs `r variables_[2]`, lo cual nos da informacion de como la `r variables_[13]` de las personas se mueve en cada `r variables_[2]`. 
+```{r, fig.align="center",fig.width=5,fig.height=4}
 plot(data[[13]],data[[2]])
+```
+ El siguiente grafico muestra a `r variables_[13]` vs `r variables_[3]`, lo cual nos da informacion de como la `r variables_[13]` de las personas se mueve en cada `r variables_[3]`. 
+
+```{r, fig.align="center",fig.width=5,fig.height=4}
 plot(data[[13]],data[[3]])
+```
+ El siguiente grafico muestra a `r variables_[13]` vs `r variables_[4]`, lo cual nos da informacion de como la `r variables_[13]` de las personas se mueve en cada `r variables_[4]`. 
+
+```{r, fig.align="center",fig.width=5,fig.height=4}
 plot(data[[13]],data[[4]])
+```
+ El siguiente grafico muestra a `r variables_[13]` vs `r variables_[5]`, lo cual nos da informacion de como la `r variables_[13]` de las personas se mueve en cada `r variables_[5]`. 
+
+```{r, fig.align="center",fig.width=5,fig.height=4}
 plot(data[[13]],data[[5]])
+```
+ El siguiente grafico muestra a `r variables_[13]` vs `r variables_[11]`, lo cual nos da informacion de como la `r variables_[13]` de las personas se mueve en cada `r variables_[11]`. 
+
+```{r, fig.align="center",fig.width=5,fig.height=4}
 plot(data[[13]],data[[11]])
 ```
-
-
