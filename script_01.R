@@ -6,7 +6,8 @@ list.files()
 
 data <- read_sav("SPSS_Esmeraldas_Poblacion.sav")
 
-data <- poblacion
+
+
 
 dim(data)
 glimpse(data)
@@ -51,4 +52,23 @@ est <- function(vector){
   
 
 lapply(subdata, est)
+
+
+lapply(data2, is.character)
+
+
+
+data2 <- tbl_dt(data2)
+
+
+
+
+data2 <- read_sav("base_modelos.sav")
+
+summary(data2)
+
+
+#la tabla no de las miles de variables, solo de las 53 primeras
+
+
 

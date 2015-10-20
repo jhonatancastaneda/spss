@@ -1,10 +1,10 @@
 ---
-title: "Informe_1"
-author: "Jhonatan"
+title: "Informe 1"
+author: "Jhonatan Castañeda"
 date: "7 de octubre de 2015"
 output: html_document
 ---
-
+# 1.-
 
 
 # Introducción
@@ -18,37 +18,37 @@ El presente documento tiene como objetivo presentar un __reporte__ automático u
 
 # Descripción e información 
 
-Iniciamos cargando el archivo que contiene las varibles a utilizar, el paquete _readxl_ permite leer archivos desde excel, que es donde suelen estar los archivos, sin la necesidad de instalar complementos, pero en este caso usaremos el paquete _haven_ pues la data está en formato spss.
+Iniciamos cargando el archivo que contiene las variables a utilizar, el paquete _readxl_ permite leer archivos desde excel, que es donde suelen estar los archivos, sin la necesidad de instalar complementos, pero en este caso usaremos el paquete _haven_ pues la data está en formato spss.
 
 ```{r,echo=TRUE,eval=TRUE}
 options(warn=-1)
 library(haven)
 library(dplyr)
 library(DT)
+library(sqldf)
 
 data <- read_sav("SPSS_Esmeraldas_Poblacion.sav")
 
 data$I02 <- as.numeric(data$I02)
 data$P01 <- as.numeric(data$P01)
 cod <- names(data)[1:13]
-variables_ <- c("PROVINCIA","CANTON","PARROQUIA","ZONA","SECOR","VIVIENDA","HOGAR","URB_RUR","ORDEN EN EL HOGAR","C Y D EN ESE HOGAR","SEXO","PARENTESCO CON JEFE DE HOGAR","EDAD")
+variables_ <- c("PROVINCIA","CANTON","PARROQUIA","ZONA","SECTOR","VIVIENDA","HOGAR","URB_RUR","ORDEN EN EL HOGAR","C Y D EN ESE HOGAR","SEXO","PARENTESCO CON JEFE DE HOGAR","EDAD")
 TABLA_ <- data.frame(cod,variables_)
 datatable(TABLA_)
-glimpse(data)
+# glimpse(data) mostraria información técnica de la data
 ```
 Analizando la información disponemos de `r nrow(data)` observaciones de `r ncol(data)` variables.
-Se requiere explicar la mayor cantidad de varibles, en este caso se analizaran las primeras 13 variables por lo que en la tabla se muestran solo estas, ya que son las que mayor informacion nos dan sobre los datos.
+Se requiere explicar la mayor cantidad de variables, en este caso se analizaran las primeras 13 variables por lo que en la tabla se muestran solo estas, ya que son las que mayor información nos dan sobre los datos.
 
 ##Iniciaremos por ver las variables:
 
 ###Empleamos el paquete `sqldf()`para poder usar lo siguiente:
 
 
-En lo siguiete veremos los diferentes valores que toma cada variable, la cantidad de veces que aparece en los datos cada uno de estos valores, es decir la cantidad de personas que se tienen registradas en cada uno de los valores de las variables, la edad maxima y minima.
+En lo siguiente veremos los diferentes valores que toma cada variable, la cantidad de veces que aparece en los datos cada uno de estos valores, es decir la cantidad de personas que se tienen registradas en cada uno de los valores de las variables, la edad máxima y mínima.
 
 ###Cantidad de personas registradas en cada `r variables_[2]`: 
 ```{r,echo=TRUE,eval=TRUE}
-library(sqldf)
 sqldf("SELECT I02, count(I03) AS POBL,max(P03) AS EDAD_MAX,min(P03) AS EDAD_MIN
       FROM data
       Group By I02")
@@ -56,7 +56,6 @@ sqldf("SELECT I02, count(I03) AS POBL,max(P03) AS EDAD_MAX,min(P03) AS EDAD_MIN
 
 ###Cantidad de personas registradas en cada `r variables_[3]`: 
 ```{r,echo=TRUE,eval=TRUE}
-library(sqldf)
 sqldf("SELECT I03, count(I04) AS POBL,max(P03) AS EDAD_MAX,min(P03) AS EDAD_MIN
       FROM data
       Group By I03")
@@ -64,21 +63,18 @@ sqldf("SELECT I03, count(I04) AS POBL,max(P03) AS EDAD_MAX,min(P03) AS EDAD_MIN
 
 ###Cantidad de personas registradas en cada `r variables_[4]`: 
 ```{r,echo=TRUE,eval=TRUE}
-library(sqldf)
 sqldf("SELECT I04, count(I05) AS POBL,max(P03) AS EDAD_MAX,min(P03) AS EDAD_MIN
       FROM data
       Group By I04")
 ```
 ###Cantidad de personas registradas en cada `r variables_[5]`: 
 ```{r,echo=TRUE,eval=TRUE}
-library(sqldf)
 sqldf("SELECT I05, count(I04) AS POBL,max(P03) AS EDAD_MAX,min(P03) AS EDAD_MIN
       FROM data
       Group By I04")
 ```
 ###Cantidad de personas registradas en cada `r variables_[13]`: 
 ```{r,echo=TRUE,eval=TRUE}
-library(sqldf)
 sqldf("SELECT P03, count(I05) AS POBL
       FROM data
       Group By P03")
@@ -95,6 +91,12 @@ hist(data[[11]],15)
 ```{r, fig.align="center",fig.width=5,fig.height=4}
 hist(data[[13]],15)
 ```
+El histograma nos da información como la de:
+la media que se encuentra en este caso en el valor de `r mean(data[[13]])`
+la mediana que se encuentra en este caso en el valor de `r median(data[[13]])`,etc
+
+
+
  El siguiente grafico muestra a `r variables_[13]` vs `r variables_[2]`, lo cual nos da informacion de como la `r variables_[13]` de las personas se mueve en cada `r variables_[2]`. 
 ```{r, fig.align="center",fig.width=5,fig.height=4}
 plot(data[[13]],data[[2]])
@@ -119,3 +121,4 @@ plot(data[[13]],data[[5]])
 ```{r, fig.align="center",fig.width=5,fig.height=4}
 plot(data[[13]],data[[11]])
 ```
+
