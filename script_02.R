@@ -4,7 +4,6 @@
 #1.-
   
   
-install.packages('foreign',dependencies = TRUE)
 library(foreign)
 library(dplyr)
 library(DT)
@@ -65,13 +64,9 @@ datatable(TABLA_)
 #2.-
 
 columnas <- which(unlist(lapply(data2, class))=="character")
-View(char_base) <- data2[columnas]
+char_base <- data2[columnas]
 
-for (i in 1:length(char_base)){
-  
-  aplica <- char_base[[1]]
-  
-  sqldf("SELECT 
-        FROM data
-        Group By I04")
-  
+TIENE_CREDITO1 <-ifelse(char_base[2]=="SI",1,0)
+GENERO_C1 <-ifelse(char_base[4]=="M",1,0)
+TELF_CASA1 <-ifelse(char_base[6]=="S",1,0)
+TELF_MOVIL1 <-ifelse(char_base[7]=="S",1,0)
