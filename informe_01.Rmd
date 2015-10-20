@@ -26,19 +26,65 @@ library(haven)
 library(dplyr)
 library(DT)
 library(sqldf)
-
+library(readxl)
+poblacion <- read_excel("poblacion.xlsx", sheet = 1)
+poblacion <- subset(poblacion,poblacion[2]=="ESMERALDAS")
+pob_1 <- substring(poblacion[[1]],1,2)
+pob_1 <- as.numeric(pob_1)
+pob_2 <- substring(poblacion[[1]],3,4)
+pob_2 <- as.numeric(pob_2)
+pob_3 <- substring(poblacion[[1]],5,6)
+pob_3 <- as.numeric(pob_3)
+poblacion <- cbind(poblacion,pob_1,pob_2,pob_3)
 data <- read_sav("SPSS_Esmeraldas_Poblacion.sav")
-
 data$I02 <- as.numeric(data$I02)
 data$P01 <- as.numeric(data$P01)
 cod <- names(data)[1:13]
 variables_ <- c("PROVINCIA","CANTON","PARROQUIA","ZONA","SECTOR","VIVIENDA","HOGAR","URB_RUR","ORDEN EN EL HOGAR","C Y D EN ESE HOGAR","SEXO","PARENTESCO CON JEFE DE HOGAR","EDAD")
 TABLA_ <- data.frame(cod,variables_)
 datatable(TABLA_)
+
+POB__1 <-sqldf("SELECT I02
+      FROM data
+      GROUP BY I02")
+
+
+POB__2 <-sqldf("SELECT I03
+      FROM data
+      GROUP BY I03")
+
 # glimpse(data) mostraria información técnica de la data
 ```
 Analizando la información disponemos de `r nrow(data)` observaciones de `r ncol(data)` variables.
-Se requiere explicar la mayor cantidad de variables, en este caso se analizaran las primeras 13 variables por lo que en la tabla se muestran solo estas, ya que son las que mayor información nos dan sobre los datos.
+Se requiere explicar la mayor cantidad de variables, en este caso se analizaran las primeras 13 variables por lo que en la tabla se muestran solo estas, ya que son las que mayor información nos dan sobre los datos, se debe tomar en cuenta las siguientes cuestiones:
+
+##Los Códigos usados para la variable `r variables_[2]` significan:
+
+```{r,echo=TRUE,eval=TRUE}
+clo__1 <- c(1:length(POB__1[[1]]))
+for (i in 1:length(POB__1[[1]])){
+  for(j in 1:length(poblacion[[1]])){
+clo__1[i]<-ifelse(poblacion[[7]][j]==POB__1[[1]][i],poblacion[[3]][j],clo__1[i])
+  }
+}
+TABLA_ <- cbind(POB__1[[1]],clo__1)
+datatable(TABLA_)
+
+```
+
+##Los Códigos usados para la variable `r variables_[3]` significan:
+
+```{r,echo=TRUE,eval=TRUE}
+clo__2 <- c(1:length(POB__2[[1]]))
+for (i in 1:length(POB__2[[1]])){
+  for(j in 1:length(poblacion[[1]])){
+clo__2[i]<-ifelse(poblacion[[8]][j]==POB__2[[1]][i],poblacion[[4]][j],clo__2[i])
+  }
+}
+TABLA_ <- cbind(POB__2[[1]],clo__2)
+datatable(TABLA_)
+
+```
 
 ##Iniciaremos por ver las variables:
 
